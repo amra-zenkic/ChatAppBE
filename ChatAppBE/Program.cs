@@ -1,13 +1,31 @@
-using ChatAppBE.DataService;
 using ChatAppBE.Hubs;
+using ChatAppBE.Models;
+using ChatAppBE.Services;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+// Add MongoDB settings
+var mongoDBSettings = builder.Configuration.GetSection("MongoDBSettings").Get<MongoDBSettings>();
+builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDBSettings"));
+
+builder.Services.AddDbContext<ChatAppDbContext>(options =>
+    options.UseMongoDB(mongoDBSettings.AtlasURI ?? "", mongoDBSettings.DatabaseName ?? ""));
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IMessagesService, MessagesService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
@@ -21,7 +39,8 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddSingleton<SharedDB>();
+
+
 
 var app = builder.Build();
 
