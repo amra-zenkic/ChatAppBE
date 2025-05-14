@@ -1,7 +1,7 @@
-﻿using ChatAppBE.Models;
+﻿using ChatAppBE.Models.Models;
 using MongoDB.Bson;
 
-namespace ChatAppBE.Services
+namespace ChatAppBE.Services.Services.IService
 {
     public interface IUserService
     {

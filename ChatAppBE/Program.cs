@@ -1,6 +1,8 @@
 using ChatAppBE.Hubs;
-using ChatAppBE.Models;
+using ChatAppBE.Models.Models;
 using ChatAppBE.Services;
+using ChatAppBE.Services.Services;
+using ChatAppBE.Services.Services.IService;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);

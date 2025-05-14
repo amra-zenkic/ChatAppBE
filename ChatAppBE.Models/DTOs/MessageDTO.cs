@@ -1,4 +1,4 @@
-﻿namespace ChatAppBE.DTOs
+﻿namespace ChatAppBE.Models.DTOs
 {
     public class MessageDto
     {

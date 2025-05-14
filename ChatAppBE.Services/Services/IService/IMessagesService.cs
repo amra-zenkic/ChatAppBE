@@ -1,7 +1,7 @@
-﻿using ChatAppBE.Models;
-using ChatAppBE.DTOs;
+﻿using ChatAppBE.Models.Models;
+using ChatAppBE.Models.DTOs;
 
-namespace ChatAppBE.Services
+namespace ChatAppBE.Services.Services.IService
 {
     public interface IMessagesService
     {

@@ -1,5 +1,6 @@
-﻿using ChatAppBE.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using ChatAppBE.Models.Models;
+using ChatAppBE.Services.Services.IService;
 
 namespace ChatAppBE.Controllers
 {
@@ -15,7 +16,7 @@ namespace ChatAppBE.Controllers
         [HttpPost("send")]
         public IActionResult SendMessage(string sender, string receiver, string content)
         {
-            var newMessage = new Models.Message
+            var newMessage = new Message
             {
                 Sender = sender,
                 Receiver = receiver,

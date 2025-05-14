@@ -1,5 +1,5 @@
-﻿using ChatAppBE.Models;
-using ChatAppBE.Services;
+﻿using ChatAppBE.Models.Models;
+using ChatAppBE.Services.Services.IService;
 using Microsoft.AspNetCore.SignalR;
 using MongoDB.Bson;
 using System;

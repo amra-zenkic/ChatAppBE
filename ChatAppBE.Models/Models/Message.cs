@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.EntityFrameworkCore;
 
-namespace ChatAppBE.Models
+namespace ChatAppBE.Models.Models
 {
     [Collection("messages")]
     public class Message

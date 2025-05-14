@@ -1,4 +1,6 @@
-﻿using ChatAppBE.Models;
+﻿using ChatAppBE.Models.Models;
+using ChatAppBE.Services.Services;
+using ChatAppBE.Services.Services.IService;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 

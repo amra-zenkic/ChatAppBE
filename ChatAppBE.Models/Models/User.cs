@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using MongoDB.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace ChatAppBE.Models
+namespace ChatAppBE.Models.Models
 {
     [Collection("users")]
     public class User

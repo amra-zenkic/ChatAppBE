@@ -1,4 +1,4 @@
-﻿namespace ChatAppBE.Models
+﻿namespace ChatAppBE.Models.Models
 {
     public class MongoDBSettings
     {

@@ -1,5 +1,7 @@
-﻿using ChatAppBE.DTOs;
-using ChatAppBE.Models;
+﻿using ChatAppBE.Models.DTOs;
+using ChatAppBE.Models.Models;
+using ChatAppBE.Services.Services;
+using ChatAppBE.Services.Services.IService;
 using MongoDB.Bson;
 
 namespace ChatAppBE.Services
