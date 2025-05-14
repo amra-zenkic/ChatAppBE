@@ -63,10 +63,10 @@ namespace ChatAppBE.Hubs
             var receiver = _userService.GetUserById(ObjectId.Parse(toUserId));
 
             await Clients.User(receiver.Username)
-                .SendAsync("ReceivePrivateMessage", sender.Username, message, newMessage.Timestamp, fromUserId);
+                .SendAsync("ReceivePrivateMessage", sender, receiver, message, newMessage.Timestamp, fromUserId);
 
             await Clients.User(sender.Username)
-                .SendAsync("ReceivePrivateMessage", sender.Username, message, newMessage.Timestamp, toUserId);
+                .SendAsync("ReceivePrivateMessage", sender, receiver, message, newMessage.Timestamp, toUserId);
         }
         public override async Task OnDisconnectedAsync(Exception exception)
         {
