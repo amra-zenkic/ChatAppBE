@@ -16,7 +16,7 @@ namespace ChatAppBE.Hubs
             _messageService = messagesService;
             _userService = userService;
         }
-        public async Task SendMessage(string userId, string message)
+        public async Task SendMessage(string userId, string message) // group messages
         {
             
             var fromUserName = Context.UserIdentifier;
@@ -31,23 +31,23 @@ namespace ChatAppBE.Hubs
                 Timestamp = DateTime.Now
             };
             _messageService.AddNewMessage(newMessage);
+            var user = _userService.GetUserById(ObjectId.Parse(userId));
+            await Clients.All.SendAsync("ReceiveSpecificMessage", user.Username, message, newMessage.Timestamp, "group");
 
-            await Clients.All
-                    .SendAsync("ReceiveSpecificMessage", fromUserName, message, DateTime.Now);
+            // await Clients.All
+            //        .SendAsync("ReceiveSpecificMessage", fromUserName, message, DateTime.Now);
         }
-        
+
         public async Task JoinSpecificChatRoom()
         {
             var fromUserName = Context.UserIdentifier;
+            var username = _userService.GetUserById(ObjectId.Parse(fromUserName)).Username;
             await Clients.All
-                .SendAsync("ReceiveMessage", "admin", $"User: {fromUserName} has joined chat", fromUserName, DateTime.Now);
+                .SendAsync("ReceiveMessage", "admin", $"User: {username} has joined chat", fromUserName, DateTime.Now);
         }
 
         public async Task SendPrivateMessage(string fromUserId, string toUserId, string message)
         {
-            var fromUserName = Context.UserIdentifier;
-
-            // save the message to the database
             var newMessage = new Message
             {
                 Sender = fromUserId,
@@ -56,15 +56,17 @@ namespace ChatAppBE.Hubs
                 Timestamp = DateTime.Now
             };
             _messageService.AddNewMessage(newMessage);
-            var username1 = _userService.GetUserById(ObjectId.Parse(fromUserId));
-            var username2 = _userService.GetUserById(ObjectId.Parse(toUserId));
 
-            // Pošalji poruku primatelju
-            await Clients.User(username1.Username).SendAsync("ReceivePrivateMessage", fromUserName, message, DateTime.Now);
+            var sender = _userService.GetUserById(ObjectId.Parse(fromUserId));
+            var receiver = _userService.GetUserById(ObjectId.Parse(toUserId));
 
-            // Pošalji i pošiljaocu (echo)
-            await Clients.User(username2.Username).SendAsync("ReceivePrivateMessage", fromUserName, message, DateTime.Now);
+            await Clients.User(receiver.Id)
+                .SendAsync("ReceivePrivateMessage", sender.Username, message, newMessage.Timestamp, fromUserId);
+
+            await Clients.User(sender.Id)
+                .SendAsync("ReceivePrivateMessage", sender.Username, message, newMessage.Timestamp, toUserId);
         }
+
 
 
 

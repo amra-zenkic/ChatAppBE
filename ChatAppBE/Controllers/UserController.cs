@@ -14,8 +14,9 @@ namespace ChatAppBE.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult CreateUser(string username)
+        public IActionResult CreateUser()
         {
+            var username = _userService.GenerateUniqueUsername();
             var user = new User
             {
                 Username = username,

@@ -12,6 +12,29 @@ namespace ChatAppBE.Services
         {
             _context = context;
         }
+        public string GenerateUniqueUsername() // function to generate a unique username
+        {
+            var adjectives = new[] { "Fast", "Smart", "Happy", "Crazy", "Silent", "Golden", "Secret" };
+            var nouns = new[] { "Lion", "Tiger", "Dragon", "Wolf", "Bear", "Falcon", "Lynx" };
+            var random = new Random();
+            string username;
+            User existingUser;
+
+            do
+            {
+                var adjective = adjectives[random.Next(adjectives.Length)];
+                var noun = nouns[random.Next(nouns.Length)];
+                var timePart = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString().Substring(9); // last 4 digits
+                var number = random.Next(0, 100).ToString("D2"); // 2 digits
+
+                username = $"{adjective}{noun}{timePart}{number}";
+                existingUser = _context.Users.FirstOrDefault(u => u.Username == username && u.Status == "online");
+            }
+            while (existingUser != null);
+
+            return username;
+        }
+
 
         public User AddUser(User newUser)
         {
@@ -31,8 +54,6 @@ namespace ChatAppBE.Services
                 newUser.Id = ObjectId.GenerateNewId().ToString();
             }
             _context.Users.Add(newUser);
-            
-
 
             _context.SaveChanges();
             return newUser;
