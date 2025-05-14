@@ -18,7 +18,7 @@ namespace ChatAppBE.Services
             var nouns = new[] { "Lion", "Tiger", "Dragon", "Wolf", "Bear", "Falcon", "Lynx" };
             var random = new Random();
             string username;
-            User existingUser;
+            User existingUser = null;
 
             do
             {
@@ -38,17 +38,6 @@ namespace ChatAppBE.Services
 
         public User AddUser(User newUser)
         {
-            // don't allow two active users to have the same username
-            var userExists = _context.Users.Where(u => (u.Username == newUser.Username && u.Status == "online")).FirstOrDefault();
-            if (userExists != null)
-            {
-                while(userExists != null)
-                {
-                    var random = new Random();
-                    newUser.Username = newUser.Username + random.Next(0, 100).ToString();
-                    userExists = _context.Users.Where(u => u.Username == newUser.Username).FirstOrDefault();
-                }
-            }
             if (string.IsNullOrWhiteSpace(newUser.Id))
             {
                 newUser.Id = ObjectId.GenerateNewId().ToString();
@@ -111,8 +100,12 @@ namespace ChatAppBE.Services
             _context.SaveChanges();
         }
 
-        public void UpdateUserStatusToOffline(string id)
+        public void UpdateUserStatusToOffline(string? id)
         {
+            if(id == null)
+            {
+                throw new ArgumentException("The user id cannot be null or empty");
+            }
             var user = _context.Users.Where(c => c.Id == id).FirstOrDefault();
             if (user != null)
             {
@@ -124,6 +117,11 @@ namespace ChatAppBE.Services
             {
                 throw new ArgumentException("The user to update cannot be found");
             }
+        }
+
+        public User GetActiveUserByName(string username)
+        {
+            return _context.Users.Where(c => c.Username == username).FirstOrDefault();
         }
     }
 }

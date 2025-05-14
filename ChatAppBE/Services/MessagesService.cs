@@ -91,18 +91,5 @@ namespace ChatAppBE.Services
         
 
 
-
-        /*
-        public IEnumerable<Message> GetAllPrivateMessages(string user1, string user2)
-        {
-            return _context.Messages
-                .Where(m =>
-                    (m.Sender == user1 && m.Receiver == user2) ||
-                    (m.Sender == user2 && m.Receiver == user1))
-                .OrderBy(m => m.Timestamp)
-                .AsEnumerable();
-        }
-        */
-
     }
 }

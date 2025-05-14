@@ -41,9 +41,11 @@ namespace ChatAppBE.Hubs
         public async Task JoinSpecificChatRoom()
         {
             var fromUserName = Context.UserIdentifier;
-            var username = _userService.GetUserById(ObjectId.Parse(fromUserName)).Username;
+            var user = _userService.GetActiveUserByName(fromUserName);
+
             await Clients.All
-                .SendAsync("ReceiveMessage", "admin", $"User: {username} has joined chat", fromUserName, DateTime.Now);
+                .SendAsync("ReceiveMessage", "admin", $"User: {fromUserName} has joined group chat", user, DateTime.Now);
+            //.SendAsync("ReceiveMessage", "admin", $"User: {username} has joined group chat", fromUserName, DateTime.Now);
         }
 
         public async Task SendPrivateMessage(string fromUserId, string toUserId, string message)
@@ -60,12 +62,29 @@ namespace ChatAppBE.Hubs
             var sender = _userService.GetUserById(ObjectId.Parse(fromUserId));
             var receiver = _userService.GetUserById(ObjectId.Parse(toUserId));
 
-            await Clients.User(receiver.Id)
+            await Clients.User(receiver.Username)
                 .SendAsync("ReceivePrivateMessage", sender.Username, message, newMessage.Timestamp, fromUserId);
 
-            await Clients.User(sender.Id)
+            await Clients.User(sender.Username)
                 .SendAsync("ReceivePrivateMessage", sender.Username, message, newMessage.Timestamp, toUserId);
         }
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            var username = Context.UserIdentifier;
+
+            //var user = _userService.GetUserById(ObjectId.Parse(userId)); // ako koristiš username kao identifier
+            var user = _userService.GetActiveUserByName(username);
+
+            if (user != null)
+            {
+                user.Status = "offline";
+                _userService.UpdateUserStatusToOffline(user.Id);
+                await Clients.All.SendAsync("UserLeft", user.Id, user.Username);
+            }
+
+            await base.OnDisconnectedAsync(exception);
+        }
+
 
 
 
