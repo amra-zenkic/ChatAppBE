@@ -1,13 +1,14 @@
-﻿using ChatAppBE.Models.Models;
-using ChatAppBE.Services.Services.IService;
-using Microsoft.AspNetCore.Mvc;
-
-namespace ChatAppBE.Controllers
+﻿namespace ChatAppBE.Controllers
 {
+    using ChatAppBE.Models.Models;
+    using ChatAppBE.Services.Services.IService;
+    using Microsoft.AspNetCore.Mvc;
+
     [Route("users")]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+
         public UserController(IUserService userService)
         {
             _userService = userService;
@@ -20,11 +21,12 @@ namespace ChatAppBE.Controllers
             var user = new User
             {
                 Username = username,
-                Status = "online"
+                Status = "online",
             };
             user = _userService.AddUser(user);
             return Ok(user);
         }
+
         [HttpPost("updateStatus/{id}")]
         public IActionResult UpdateUserStatusToOffline(string id)
         {
@@ -38,18 +40,21 @@ namespace ChatAppBE.Controllers
             var users = _userService.GetAllUsers();
             return Ok(users);
         }
+
         [HttpGet("active")]
         public IActionResult GetAllActiveUsers()
         {
             var users = _userService.GetAllActiveUsers();
             return Ok(users);
         }
+
         [HttpGet("privateChat/{id}")]
         public IActionResult GetAllPrivateChatStarted(string id)
         {
             var users = _userService.GetAllPrivateChatStarted(id);
             return Ok(users);
         }
+
         [HttpDelete("deleteAll")]
         public IActionResult DeleteAllUsers()
         {

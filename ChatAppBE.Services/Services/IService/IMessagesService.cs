@@ -1,13 +1,18 @@
-﻿using ChatAppBE.Models.Models;
-using ChatAppBE.Models.DTOs;
-
-namespace ChatAppBE.Services.Services.IService
+﻿namespace ChatAppBE.Services.Services.IService
 {
+    using ChatAppBE.Models.DTOs;
+    using ChatAppBE.Models.Models;
+
     public interface IMessagesService
     {
-        void AddNewMessage(Message newMessage); // for both group and private messages
+        void AddNewMessage(Message newMessage);
+
         IEnumerable<MessageDto> GetAllGroupMessages();
-        IEnumerable<MessageDto> GetAllPrivateMessages(string user1, string user2);
-        void DeleteAllMessages(); // for both group and private messages
+
+        void DeleteAllMessages();
+
+        public (IEnumerable<MessageDto> Messages, bool HasMore) GetGroupMessages(int skip = 0, int take = 20);
+
+        public (IEnumerable<MessageDto> Messages, bool HasMore) GetPrivateMessages(string user1, string user2, int skip, int take);
     }
 }

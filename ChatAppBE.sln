@@ -7,9 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAppBE", "ChatAppBE\Chat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAppBE.Models", "ChatAppBE.Models\ChatAppBE.Models.csproj", "{EE5F40D4-52FE-4FC8-A2C9-4F94B98B7C88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAppBE.Utility", "ChatAppBE.Utility\ChatAppBE.Utility.csproj", "{17FCFF15-F991-4BED-8B5D-9F85C9FC9D6B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAppBE.Services", "ChatAppBE.Services\ChatAppBE.Services.csproj", "{BCE850DF-A648-475C-8B4B-129729AAF18A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +28,6 @@ Global
 		{EE5F40D4-52FE-4FC8-A2C9-4F94B98B7C88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE5F40D4-52FE-4FC8-A2C9-4F94B98B7C88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE5F40D4-52FE-4FC8-A2C9-4F94B98B7C88}.Release|Any CPU.Build.0 = Release|Any CPU
-		{17FCFF15-F991-4BED-8B5D-9F85C9FC9D6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17FCFF15-F991-4BED-8B5D-9F85C9FC9D6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17FCFF15-F991-4BED-8B5D-9F85C9FC9D6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17FCFF15-F991-4BED-8B5D-9F85C9FC9D6B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCE850DF-A648-475C-8B4B-129729AAF18A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BCE850DF-A648-475C-8B4B-129729AAF18A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCE850DF-A648-475C-8B4B-129729AAF18A}.Release|Any CPU.ActiveCfg = Release|Any CPU

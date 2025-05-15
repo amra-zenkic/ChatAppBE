@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using System;
-
-public class CustomUserIdProvider : IUserIdProvider
+﻿namespace ChatAppBE.Services.Services
 {
-    public string GetUserId(HubConnectionContext connection)
+    using Microsoft.AspNetCore.SignalR;
+
+    public class CustomUserIdProvider : IUserIdProvider
     {
-        // reads userId from the query string
-        return connection.GetHttpContext()?.Request.Query["userId"];
+        public string? GetUserId(HubConnectionContext connection)
+        {
+            return connection.GetHttpContext()?.Request.Query["userId"];
+        }
     }
 }

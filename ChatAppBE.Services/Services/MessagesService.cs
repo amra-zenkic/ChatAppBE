@@ -1,11 +1,10 @@
-﻿using ChatAppBE.Models.DTOs;
-using ChatAppBE.Models.Models;
-using ChatAppBE.Services.Services;
-using ChatAppBE.Services.Services.IService;
-using MongoDB.Bson;
-
-namespace ChatAppBE.Services
+﻿namespace ChatAppBE.Services.Services
 {
+    using ChatAppBE.Models.DTOs;
+    using ChatAppBE.Models.Models;
+    using ChatAppBE.Services.Services.IService;
+    using MongoDB.Bson;
+
     public class MessagesService : IMessagesService
     {
         private readonly ChatAppDbContext _context;
@@ -14,34 +13,35 @@ namespace ChatAppBE.Services
         {
             _context = context;
         }
+
         public void AddNewMessage(Message newMessage)
         {
             newMessage.Id = ObjectId.GenerateNewId().ToString();
             _context.Messages.Add(newMessage);
+
             _context.SaveChanges();
         }
 
         public void DeleteAllMessages()
         {
             _context.Messages.RemoveRange(_context.Messages);
+
             _context.SaveChanges();
         }
 
         public IEnumerable<MessageDto> GetAllGroupMessages()
         {
-            // load messages and users in parallel
             var messages = _context.Messages
                 .Where(m => string.IsNullOrEmpty(m.Receiver))
                 .ToList();
 
             var users = _context.Users.ToList();
 
-            // optimise user search by creating a dictionary
-            var userDict = users.ToDictionary(u => u.Id);
+            var userDict = users.ToDictionary(u => u.Id!);
 
             var result = messages.Select(m =>
             {
-                var username = userDict.TryGetValue(m.Sender, out var user)
+                var username = userDict.TryGetValue(m.Sender!, out var user)
                     ? user.Username
                     : "Unknown";
 
@@ -49,49 +49,85 @@ namespace ChatAppBE.Services
                 {
                     Username = username,
                     Message = m.Content,
-                    SentAt = m.Timestamp
+                    SentAt = m.Timestamp,
                 };
             });
 
             return result;
         }
-        public IEnumerable<MessageDto> GetAllPrivateMessages(string user1, string user2)
-        {
-            // load all private messages between two users
-            var messages = _context.Messages
-                .Where(m =>
-                    (m.Sender == user1 && m.Receiver == user2) ||
-                    (m.Sender == user2 && m.Receiver == user1))
-                .OrderBy(m => m.Timestamp)
-                .ToList(); 
 
-            // load users
+        public (IEnumerable<MessageDto> Messages, bool HasMore) GetGroupMessages(int skip = 0, int take = 20)
+        {
+            var query = _context.Messages
+                .Where(m => string.IsNullOrEmpty(m.Receiver))
+                .OrderByDescending(m => m.Timestamp);
+
+            int totalCount = query.Count();
+
+            var messages = query
+                .Skip(skip)
+                .Take(take)
+                .ToList();
+
             var userIds = messages.Select(m => m.Sender).Distinct().ToList();
             var users = _context.Users
                 .Where(u => userIds.Contains(u.Id))
                 .ToList();
 
+            var userDict = users.ToDictionary(u => u.Id!);
+
+            var result = messages
+                .OrderBy(m => m.Timestamp)
+                .Select(m =>
+                {
+                    var username = userDict.TryGetValue(m.Sender!, out var user)
+                        ? user.Username
+                        : "Unknown";
+
+                    return new MessageDto
+                    {
+                        Username = username,
+                        Message = m.Content,
+                        SentAt = m.Timestamp,
+                    };
+                });
+
+            return (result, totalCount > skip + take);
+        }
+
+        public (IEnumerable<MessageDto> Messages, bool HasMore) GetPrivateMessages(string user1, string user2, int skip = 0, int take = 20)
+        {
+            var query = _context.Messages
+                .Where(m =>
+                    (m.Sender == user1 && m.Receiver == user2) ||
+                    (m.Sender == user2 && m.Receiver == user1))
+                .OrderByDescending(m => m.Timestamp);
+
+            int totalCount = query.Count();
+
+            var messages = query
+                .Skip(skip)
+                .Take(take)
+                .ToList();
+
+            var userIds = messages.Select(m => m.Sender).Distinct().ToList();
+            var users = _context.Users
+                .Where(u => userIds.Contains(u.Id))
+                .ToList();
             var userDict = users.ToDictionary(u => u.Id);
 
-            // Mapiraj u MessageDto sa username-om
-            var result = messages.Select(m =>
-            {
-                var username = userDict.TryGetValue(m.Sender, out var user)
-                    ? user.Username
-                    : "Unknown";
-
-                return new MessageDto
+            var orderedMessages = messages
+                .OrderBy(m => m.Timestamp)
+                .Select(m => new MessageDto
                 {
-                    Username = username,
+                    Username = userDict.TryGetValue(m.Sender!, out var user)
+                        ? user.Username
+                        : "Unknown",
                     Message = m.Content,
-                    SentAt = m.Timestamp
-                };
-            });
+                    SentAt = m.Timestamp,
+                });
 
-            return result;
+            return (orderedMessages, totalCount > skip + take);
         }
-        
-
-
     }
 }
