@@ -46,7 +46,7 @@
             var user = _userService.GetActiveUserByName(fromUserName);
 
             await Clients.All
-                .SendAsync("ReceiveMessage", "admin", $"User: {fromUserName} has joined group chat", user, DateTime.Now);
+                .SendAsync("ReceiveMessage", "admin", $"User: {fromUserName} has joined group chat", user, DateTime.Now, true);
         }
 
         public async Task SendPrivateMessage(string fromUserId, string toUserId, string message)
@@ -85,7 +85,7 @@
             {
                 user.Status = "offline";
                 _userService.UpdateUserStatusToOffline(user.Id);
-                await Clients.All.SendAsync("ReceiveMessage", "admin", $"User: {user.Username} left the chat", user, DateTime.Now);
+                await Clients.All.SendAsync("ReceiveMessage", "admin", $"User: {user.Username} left the chat", user, DateTime.Now, false);
             }
 
             await base.OnDisconnectedAsync(exception);
